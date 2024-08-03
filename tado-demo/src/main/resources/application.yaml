@@ -1,11 +1,12 @@
+# property values based on https://support.tado.com/en/articles/8565472-how-do-i-update-my-rest-api-authentication-method-to-oauth-2
 spring:
   security:
     oauth2:
       client:
         registration:
           tado:
-            client-id: tado-web-app
-            client-secret: wZaRN7rpjn3FoNyF5IFuxg9uMzYJcvOoQ8QWiIqS3hfk6gLhVlG57j5YNoZL2Rtc
+            client-id: public-api-preview
+            client-secret: 4HJGRffVR8xb3XdEUQpjgZ1VplJi6Xgw
             authorization-grant-type: password
         provider:
           tado:

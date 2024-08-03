@@ -40,14 +40,8 @@ open class OAuth2Config {
     }
 
     // Create the client registration repository
-    // The bean/method must be not be named 'clientRegistrationRepository', to prevent this error upon application start-up:
-    // "The bean 'clientRegistrationRepository', defined in class path resource
-    // [org/springframework/boot/autoconfigure/security/oauth2/client/reactive/ReactiveOAuth2ClientConfigurations$ReactiveClientRegistrationRepositoryConfiguration.class],
-    // could not be registered.
-    // A bean with that name has already been defined in class path resource [tado/oauthconfig/OAuth2Config.class]
-    // and overriding is disabled."
     @Bean
-    open fun myClientRegistrationRepository(clientRegistration: ClientRegistration?): ClientRegistrationRepository {
+    open fun clientRegistrationRepository(clientRegistration: ClientRegistration?): ClientRegistrationRepository {
         return InMemoryClientRegistrationRepository(clientRegistration)
     }
 
@@ -72,6 +66,7 @@ open class OAuth2Config {
         val authorizedClientProvider =
             OAuth2AuthorizedClientProviderBuilder.builder()
                 .password()
+                .refreshToken()
                 .build()
 
         val authorizedClientManager =

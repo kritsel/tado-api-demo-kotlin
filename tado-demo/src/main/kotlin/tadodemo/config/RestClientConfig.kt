@@ -17,12 +17,4 @@ open class RestClientConfig(val oauthRequestInterceptor: OAuthRequestInterceptor
             .requestInterceptor(oauthRequestInterceptor).build()
     }
 
-//    @Bean("oauthRestClient")
-//    open fun oauthClient(): RestClient {
-//        return RestClient
-//            .builder()
-//            .baseUrl("https://auth.tado.com/oauth/token")
-//            .messageConverters { it.add(MappingJackson2HttpMessageConverter()) }
-//            .build()
-//    }
 }

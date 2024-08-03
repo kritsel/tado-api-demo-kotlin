@@ -3,8 +3,12 @@
 tado&ordm; is a german based company which offers a smart thermostat solution.
 They also have an API to control this solution.
 
-This kotlin application shows how you can use the tado API v2 which is available
-at https://my.tado.com/api/v2.
+This Sprint Boot kotlin application showscases how you can use the tado API v2 
+which is available at https://my.tado.com/api/v2.
+
+When you start the application, it runs a scheduled task which every minute 
+prints information like the current heating power, current temperature and
+current humidity for every room (zone) in your home.
 
 # Module set-up
 

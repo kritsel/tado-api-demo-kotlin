@@ -25,16 +25,10 @@ open class OAuthRequestInterceptor(
     @Value("\${useWindowsKeystore:false}")
     private val useWindowsKeystore:Boolean,
 
-
     // Inject the OAuth authorized client service and authorized client manager
     // from the OAuthClientConfiguration class
     val authorizedClientServiceAndManager: AuthorizedClientServiceOAuth2AuthorizedClientManager
     ) : ClientHttpRequestInterceptor {
-
-//    private val accessToken: String
-
-    @Autowired
-    private val authorizedClientService: OAuth2AuthorizedClientService? = null
 
     init {
         if (useWindowsKeystore) {
@@ -43,32 +37,6 @@ open class OAuthRequestInterceptor(
             System.setProperty("javax.net.ssl.trustStore", "NONE");
             System.setProperty("javax.net.ssl.trustStoreType", "Windows-ROOT");
         }
-
-//        val restTemplate = RestTemplate()
-//
-//        val headers = HttpHeaders()
-//        headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
-//        headers.accept = listOf( MediaType.APPLICATION_JSON)
-//
-//        // check the current client_secret to use on https://my.tado.com/webapp/env.js
-//        val bodyMap: MultiValueMap<String, String> = LinkedMultiValueMap()
-//        bodyMap.add("client_id", "tado-web-app")
-//        bodyMap.add("client_secret", "wZaRN7rpjn3FoNyF5IFuxg9uMzYJcvOoQ8QWiIqS3hfk6gLhVlG57j5YNoZL2Rtc")
-//        bodyMap.add("username", tadoUsername)
-//        bodyMap.add("password", tadoPassword)
-//        bodyMap.add("grant_type", "password")
-//
-//        val request = HttpEntity(bodyMap, headers)
-//
-//        val response: ResponseEntity<String> = restTemplate.postForEntity(
-//            "https://auth.tado.com/oauth/token", request, String::class.java
-//        )
-//        val objectMapper = ObjectMapper()
-//        val root: JsonNode = objectMapper.readTree(response.body)
-//
-//        System.out.println("response status code: ${response.statusCode}...")
-//        //System.out.println(response.body)
-//        accessToken = root.get("access_token").asText()
     }
 
     @Throws(IOException::class)
