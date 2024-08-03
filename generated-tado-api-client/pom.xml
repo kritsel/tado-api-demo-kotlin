@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>nl.kritsel</groupId>
+        <artifactId>tado-api-demo-kotlin</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+<!--    <parent>-->
+<!--        <groupId>org.springframework.boot</groupId>-->
+<!--        <artifactId>spring-boot-starter-parent</artifactId>-->
+<!--        <version>3.3.2</version>-->
+<!--        <relativePath/>-->
+<!--    </parent>-->
+
+<!--    <groupId>nl.kritsel</groupId>-->
+    <artifactId>generated-tado-api-client</artifactId>
+    <packaging>jar</packaging>
+
+    <properties>
+        <generated.src.folder>generated-src</generated.src.folder>
+    </properties>
+
+    <build>
+        <sourceDirectory>${generated.src.folder}/main/kotlin</sourceDirectory>
+        <plugins>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>7.7.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <!-- supported configuration properties documentation:
+                            https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-maven-plugin -->
+                        <configuration>
+                            <!-- the essentials -->
+                            <inputSpec>https://raw.githubusercontent.com/kritsel/tado-openapispec-v2/v2.2024.08.01.3/tado-openapispec-v2.yaml</inputSpec>
+                            <generatorName>kotlin</generatorName>
+                            <library>jvm-spring-restclient</library>
+
+                            <!-- when to generate -->
+                            <skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
+
+                            <!-- where to generate to -->
+                            <output>${project.basedir}</output>
+
+                            <!-- naming preferences -->
+                            <packageName>tadoclient</packageName>
+                            <!-- kotlin generator does not support 'apiNameSuffix' -->
+
+                            <!-- do not use cleanupOutput as it will also remove pom.xml -->
+                            <!-- <cleanupOutput>true</cleanupOutput>-->
+
+                            <!-- control what files we want to have generated -->
+                            <!-- 'generateSupportingFiles' needs to be true,
+                                  otherwise the infrastructure package is not generated -->
+<!--                            <generateSupportingFiles>true</generateSupportingFiles>-->
+                            <!-- prevent generation of files we won't be using -->
+                            <generateApiTests>false</generateApiTests>
+                            <generateModelTests>false</generateModelTests>
+                            <generateModelDocumentation>false</generateModelDocumentation>
+                            <generateApiDocumentation>false</generateApiDocumentation>
+
+                            <!-- kotlin generator specific configOptions documentation:
+                                 https://openapi-generator.tech/docs/generators/kotlin -->
+                            <configOptions>
+                                <sourceFolder>${generated.src.folder}/main/kotlin</sourceFolder>
+                                <!-- useSpringBoot3=true is mandatory when using the 'jvm-spring-restclient' library -->
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <!-- default serializationLibrary for the kotlin generator is moshi -->
+                                <serializationLibrary>jackson</serializationLibrary>
+                                <!-- prevent generation of files we won't be using -->
+                                <omitGradleWrapper>true</omitGradleWrapper>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- ensure all generated files get removed when executing mvn clean -->
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <!-- make sure to keep the files we maintain ourselves -->
+                            <directory>./</directory>
+                            <excludes>
+                                <exclude>pom.xml</exclude>
+                                <exclude>README.md</exclude>
+                                <exclude>.openapi-generator-ignore</exclude>
+                            </excludes>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+            <version>3.3.2</version>
+        </dependency>
+
+        <!-- Jackson objectmapper for kotlin -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+            <version>2.17.2</version>
+        </dependency>
+
+    </dependencies>
+
+</project>
