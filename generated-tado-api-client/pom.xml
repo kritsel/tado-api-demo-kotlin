@@ -80,16 +80,19 @@
                                 <omitGradleWrapper>true</omitGradleWrapper>
                             </configOptions>
 
+                            <!-- https://stackoverflow.com/questions/32437550/whats-the-difference-between-instant-and-localdatetime -->
+                            <!-- configure the Java types to use for string fields with a format specified
+                                 as 'date', 'date-time' or 'time' -->
                             <typeMappings>
                                 <typeMapping>DateTime=Instant</typeMapping>
-<!--                                <typeMapping>date=LocalDate</typeMapping>-->
+                                <typeMapping>date=LocalDate</typeMapping>
                                 <typeMapping>time=LocalTime</typeMapping>
                             </typeMappings>
 
                             <!-- configure the imports to use for the Java types defined above -->
                             <importMappings>
                                 <importMapping>Instant=java.time.Instant</importMapping>
-<!--                                <importMapping>LocalDate=java.time.LocalDate</importMapping>-->
+                                <importMapping>LocalDate=java.time.LocalDate</importMapping>
                                 <importMapping>LocalTime=java.time.LocalTime</importMapping>
                             </importMappings>
                         </configuration>

@@ -22,8 +22,8 @@ open class OAuthRequestInterceptor(
     @Value("\${tado.password:undefined}")
     private val tadoPassword:String,
 
-    @Value("\${useWindowsKeystore:false}")
-    private val useWindowsKeystore:Boolean,
+    @Value("\${useWindowsTrustStore:false}")
+    private val useWindowsTrustStore:Boolean,
 
     // Inject the OAuth authorized client service and authorized client manager
     // from the OAuthClientConfiguration class
@@ -31,9 +31,7 @@ open class OAuthRequestInterceptor(
     ) : ClientHttpRequestInterceptor {
 
     init {
-        if (useWindowsKeystore) {
-            System.setProperty("javax.net.ssl.keyStore", "NONE");
-            System.setProperty("javax.net.ssl.keyStoreType", "Windows-my");
+        if (useWindowsTrustStore) {
             System.setProperty("javax.net.ssl.trustStore", "NONE");
             System.setProperty("javax.net.ssl.trustStoreType", "Windows-ROOT");
         }

@@ -59,14 +59,14 @@ arguments. Edit the run configuration and add this part to the VM options
 
 `-Dtado.username=<username> -Dtado.password=<password>`
 
-## `useWindowsKeystore` option
+## `useWindowsTrustStore` option
 
 This application is developed on a company managed Windows machine, 
 where the company manages the certificates in the Windows keystore.
 
 This set-up requires that some specific system properties need to be set to instruct
-the program to use the Windows keystore instead of the Java one.
+the program to use the Windows truststore instead of the Java one.
 
 When you happen to be in a similar situation, you can add this extra JVM argument:
 
-`-DuseWindowsKeystore=true`
+`-DuseWindowsTrustStore=true`
