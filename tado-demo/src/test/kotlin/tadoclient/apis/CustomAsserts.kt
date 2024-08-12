@@ -16,6 +16,6 @@ inline fun <R> assertHttpErrorIsNotThrown(failMessage:String, httpStatus:HttpSta
     }
 }
 
-fun failMessage403(endpointMethod: String, endpointUrl:String) : String {
-    return "403 Forbidden for $endpointMethod $endpointUrl, maybe tado no longer supports this endpoint"
+fun failMessage403(endpoint: String) : String {
+    return "403 Forbidden for $endpoint, maybe tado no longer supports this endpoint"
 }

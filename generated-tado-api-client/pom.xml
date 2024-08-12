@@ -41,7 +41,7 @@
                             https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-maven-plugin -->
                         <configuration>
                             <!-- the essentials -->
-                            <inputSpec>https://raw.githubusercontent.com/kritsel/tado-openapispec-v2/v2.2024.08.11.4/tado-openapispec-v2.yaml</inputSpec>
+                            <inputSpec>https://raw.githubusercontent.com/kritsel/tado-openapispec-v2/v2.2024.08.12.4/tado-openapispec-v2.yaml</inputSpec>
                             <generatorName>kotlin</generatorName>
                             <library>jvm-spring-restclient</library>
 
@@ -81,12 +81,13 @@
                             </configOptions>
 
                             <!-- https://stackoverflow.com/questions/32437550/whats-the-difference-between-instant-and-localdatetime -->
-                            <!-- configure the Java types to use for string fields with a format specified
-                                 as 'date', 'date-time' or 'time' -->
+                            <!-- configure the Java types to use for properties/parameters specified with a specific format -->
                             <typeMappings>
                                 <typeMapping>DateTime=Instant</typeMapping>
                                 <typeMapping>date=LocalDate</typeMapping>
                                 <typeMapping>time=LocalTime</typeMapping>
+                                <typeMapping>float=Float</typeMapping>
+                                <typeMapping>double=Double</typeMapping>
                             </typeMappings>
 
                             <!-- configure the imports to use for the Java types defined above -->
@@ -94,7 +95,15 @@
                                 <importMapping>Instant=java.time.Instant</importMapping>
                                 <importMapping>LocalDate=java.time.LocalDate</importMapping>
                                 <importMapping>LocalTime=java.time.LocalTime</importMapping>
+                                <importMapping>Float=kotlin.Float</importMapping>
+                                <importMapping>Double=kotlin.Double</importMapping>
                             </importMappings>
+
+                            <!-- https://stackoverflow.com/questions/73853636/open-api-generator-allof-not-generating-model-correctly-->
+                            <!-- https://openapi-generator.tech/docs/customization/-->
+                            <openapiNormalizer>
+                                REFACTOR_ALLOF_WITH_PROPERTIES_ONLY=true
+                            </openapiNormalizer>
                         </configuration>
                     </execution>
                 </executions>
