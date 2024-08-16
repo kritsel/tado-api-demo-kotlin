@@ -3,6 +3,7 @@ package tadoclient.apis
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.client.RestClient
 import tadoclient.apis.verify.verifyMobileDevice
 import tadodemo.Application
@@ -15,6 +16,7 @@ import kotlin.test.assertNotNull
  */
 
 @SpringBootTest(classes = arrayOf( Application::class))
+@ActiveProfiles("test")
 class MobileDeviceApi_IT(
     @Qualifier("tadoRestClient")
     val tadoRestClient: RestClient

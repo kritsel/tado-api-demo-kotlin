@@ -2,6 +2,7 @@ package tadodemo
 
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Profile
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
@@ -10,6 +11,7 @@ import tadoclient.apis.ZoneApi
 import java.time.LocalDateTime
 
 @Service
+@Profile("default") // only run when the default profile is active (tests have their own 'test' profile)
 class ScheduledTask(
     @Value("\${useWindowsTrustStore:false}")
     private val useWindowsTrustStore:Boolean,

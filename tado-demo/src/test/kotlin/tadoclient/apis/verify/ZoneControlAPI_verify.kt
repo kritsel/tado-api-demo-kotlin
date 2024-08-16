@@ -2,7 +2,7 @@ package tadoclient.apis.verify
 
 import tadoclient.models.*
 
-fun verifyZoneOverlay(zoneOverlay: ZoneOverlay, context:String, parentName:String = "ZoneOverlay") {
+fun verifyZoneOverlay(zoneOverlay: Overlay, context:String, parentName:String = "ZoneOverlay") {
     verifyAny(zoneOverlay, context, parentName)
     // TODO: figure out how to test this
     verifyAny(zoneOverlay.setting!!, context, "$parentName.setting", listOf("temperature"))

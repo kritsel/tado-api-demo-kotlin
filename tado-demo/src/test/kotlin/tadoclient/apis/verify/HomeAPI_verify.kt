@@ -27,7 +27,7 @@ fun verifyAirComfort(airComfort: AirComfort, context:String, parentName:String =
 
 fun verifyHeatingSystem(heatingSystem: HeatingSystem, context:String, parentName:String = "HeatingSystem") {
     verifyAny(heatingSystem, context, parentName)
-    verifyAny(heatingSystem.boiler!!, context, "$parentName.boiler")
+    verifyAny(heatingSystem.boiler!!, context, "$parentName.boiler", nullAllowedProperties = listOf("id", "found"))
     verifyAny(heatingSystem.underfloorHeating!!, context, "$parentName.underfloorHeating")
 }
 

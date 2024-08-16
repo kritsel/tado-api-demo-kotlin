@@ -2,9 +2,11 @@ package tadodemo
 
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
 @Component
+@Profile("default") // only run when the default profile is active (tests have their own 'test' profile)
 class AppStartupRunner() : ApplicationRunner {
 
     @Throws(Exception::class)
