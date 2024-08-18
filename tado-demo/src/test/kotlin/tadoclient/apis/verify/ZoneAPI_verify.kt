@@ -1,6 +1,5 @@
 package tadoclient.apis.verify
 
-import com.sun.jdi.connect.spi.TransportService
 import tadoclient.models.*
 import kotlin.test.assertNotEquals
 
@@ -70,11 +69,6 @@ fun verifyZoneState(zoneType:ZoneType, zoneState: ZoneState, context:String, ful
         // unknonw
         ZoneType.AIR_CONDITIONING -> {}
     }
-
-//
-
-
-
 
     zoneState.overlay?.let {
         verifyZoneOverlay(zoneType, it, context, "$fullParentName.overlay")
