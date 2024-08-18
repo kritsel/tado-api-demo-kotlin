@@ -2,30 +2,40 @@ package tadoclient.apis.verify
 
 import tadoclient.models.*
 
-fun verifyZoneOverlay(zoneOverlay: Overlay, context:String, parentName:String = "ZoneOverlay") {
-    verifyAny(zoneOverlay, context, parentName)
-    // TODO: figure out how to test this
-    verifyAny(zoneOverlay.setting!!, context, "$parentName.setting", listOf("temperature"))
-//    verifyAny(zoneOverlay.setting!!.temperature!!, context, "$parentName.setting.temperature")
+fun verifyZoneOverlay(zoneType: ZoneType, zoneOverlay: ZoneOverlay, context:String, fullParentName:String = "ZoneOverlay"){
+    val typeName = "ZoneOverlay"
+    verifyNested(zoneOverlay, context, fullParentName, typeName,
+        // an overlay can be indefinite, meaning that none of time related terminiation properties will have a value
+        nullAllowedProperties = listOf(
+            "$typeName.termination.durationInSeconds",
+            "$typeName.termination.remainingTimeInSeconds",
+            "$typeName.termination.expiry",
+            "$typeName.termination.projectedExpiry"),
+        stopAtProperties = listOf("$typeName.setting"))
 
-    // TODO: figure out how to test projectedExpiry
-    verifyAny(zoneOverlay.termination!!, context, "$parentName.termination", listOf("projectedExpiry"))
+    // verify the ZoneSetting of this overlay
+    verifyZoneSetting(zoneType, zoneOverlay.setting!!, context, "$fullParentName.setting")
 }
 
-fun verifyZoneAwayConfiguration(zoneAwayConfiguration: ZoneAwayConfiguration, context:String, parentName:String = "ZoneAwayConfiguration") {
-    verifyAny(zoneAwayConfiguration, context, parentName, listOf("comfortLevel"))
-    verifyAny(zoneAwayConfiguration.setting!!, context, "$parentName.setting", listOf("temperature"))
-    // TODO: figure out how to test this
-//    verifyAny(zoneAwayConfiguration.setting!!.temperature!!, context, "$parentName.setting.temperature")
+fun verifyZoneAwayConfiguration(zoneType:ZoneType, zoneAwayConfiguration: ZoneAwayConfiguration, context:String, parentName:String = "ZoneAwayConfiguration") {
+    val typeName = "ZoneAwayConfiguration"
+    verifyNested(zoneAwayConfiguration, context, parentName, typeName,
+        nullAllowedProperties = listOf("$typeName.comfortLevel"),
+        stopAtProperties = listOf("$typeName.setting"))
+
+    // verify setting
+    verifyZoneSetting(zoneType, zoneAwayConfiguration.setting!!, context, "$parentName.setting")
 }
 
 fun verifyTimetableType(timetableType: TimetableType, context:String, parentName:String = "TimetableType") {
-    verifyAny(timetableType, context, parentName)
+    verifyNested(timetableType, context, parentName, "TimetableType")
 }
 
-fun verifyTimetableBlock(timetableBlock: TimetableBlock, context:String, parentName:String = "TimetableBlock") {
-    verifyAny(timetableBlock, context, parentName)
-    verifyAny(timetableBlock.setting!!, context, "$parentName.setting")
-    verifyAny(timetableBlock.setting!!.temperature!!, context, "$parentName.setting.temperature")
+fun verifyTimetableBlock(zoneType:ZoneType, timetableBlock: TimetableBlock, context:String, parentName:String = "TimetableBlock") {
+    val typeName = "TimetableBlock"
+    verifyNested(timetableBlock, context, parentName, typeName, stopAtProperties = listOf("$typeName.setting"))
+
+    // verify setting
+    verifyZoneSetting(zoneType, timetableBlock.setting!!, context, "$parentName.setting")
 }
 

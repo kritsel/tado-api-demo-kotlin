@@ -1,22 +1,15 @@
 package tadoclient.apis.verify
 
 import tadoclient.models.*
-import kotlin.test.assertNotNull
+import kotlin.test.assertNotEquals
 
-fun verifyUser(user:User, context:String, parentName:String = "User") {
-    verifyAny(user, context, parentName)
+fun verifyUser(user: User, context:String, fullParentName:String = "User"){
+    val typeName = "User"
+    verifyNested(user, context, fullParentName, typeName, stopAtProperties = listOf("$typeName.mobileDevices"))
 
-    assertNotNull(user.homes)
-    assertNotNull(user.homes!![0])
-    verifyHomeBase(user.homes!![0], context, "$parentName.homes[0]")
-
-    assertNotNull(user.mobileDevices)
-    assertNotNull(user.mobileDevices!![0])
-    verifyMobileDevice(user.mobileDevices!![0], context, "$parentName.mobileDevices[0]")
-}
-
-fun verifyHomeBase(homeBase:HomeBase, context:String, parentName:String = "HomeBase") {
-    verifyAny(homeBase, context, parentName)
+    // user's mobile devices
+    assertNotEquals(0, user.mobileDevices!!.size)
+    user.mobileDevices?.forEachIndexed { i, elem -> verifyMobileDevice(elem, context, "$fullParentName.mobileDevices[$i]") }
 }
 
 

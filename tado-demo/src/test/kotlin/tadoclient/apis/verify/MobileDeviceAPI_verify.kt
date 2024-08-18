@@ -2,8 +2,12 @@ package tadoclient.apis.verify
 
 import tadoclient.models.MobileDevice
 
-fun verifyMobileDevice(mobileDevice: MobileDevice, context:String, parentName:String = "MobileDevice") {
-    verifyAny(mobileDevice, context, parentName)
-    verifyAny(mobileDevice.deviceMetadata!!, context, "$parentName.deviceMetadata")
-    verifyAny(mobileDevice.settings!!, context, "$parentName.settings", listOf("pushNotifications"))
+fun verifyMobileDevice(mobileDevice: MobileDevice, context:String, fullParentName:String = "MobileDevice"){
+    val typeName = "MobileDevice"
+    verifyNested(mobileDevice, context, fullParentName, typeName,
+        nullAllowedProperties = listOf(
+            // location only available for devices which use geofencing
+            "$typeName.location",
+            // push notifications only seem to be available for phones, not for tables/iPads
+            "$typeName.settings.pushNotifications"))
 }

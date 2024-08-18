@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.client.RestClient
 import tadoclient.apis.verify.verifyDayReport
+import tadoclient.models.ZoneType
 import tadodemo.Application
 import java.time.LocalDate
 import java.time.Month
@@ -22,11 +23,12 @@ class ReportApi_IT (
 
     @Test
     fun getDayReport() {
+        // operation not supported for zones of type HOT_WATER
         val endpoint = "GET /homes/{homeId}/zones/{zoneId}/dayReport"
-        val dayReport = assertHttpErrorIsNotThrown(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
+        val dayReport = assertNoHttpErrorStatus(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
             tadoReportAPI.getZoneDayReport(HOME_ID, ZONE_ID, LocalDate.of(2024, Month.JANUARY, 11))
         }
         assertNotNull(dayReport)
-        verifyDayReport(dayReport, endpoint)
+        verifyDayReport(ZoneType.HEATING, dayReport, endpoint)
     }
 }

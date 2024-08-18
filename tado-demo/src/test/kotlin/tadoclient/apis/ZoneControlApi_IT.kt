@@ -2,7 +2,6 @@ package tadoclient.apis
 
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
@@ -22,7 +21,7 @@ class ZoneControlApi_IT(
     val tadoZoneControlAPI = ZoneControlApi(tadoRestClient)
 
     companion object {
-        var zoneOverlayBeforeTest: Overlay? = null
+        var zoneOverlayBeforeTest: ZoneOverlay? = null
     }
 
     // https://stackoverflow.com/questions/51612019/kotlin-how-to-manage-beforeclass-static-method-in-springboottest
@@ -44,15 +43,15 @@ class ZoneControlApi_IT(
             // ignore
         }
         if (zoneOverlayBeforeTest != null) {
-            val newZoneOverlay = OverlayInput(
+            val newZoneOverlay = ZoneOverlay(
                 setting = ZoneSetting(
                     type = zoneOverlayBeforeTest?.setting?.type,
                     power = zoneOverlayBeforeTest?.setting?.power,
                     temperature = if (zoneOverlayBeforeTest?.setting?.power == Power.ON) Temperature(celsius = zoneOverlayBeforeTest?.setting?.temperature?.celsius) else null
                 ),
-                termination = OverlayInputTermination(
+                termination = ZoneOverlayTermination(
                     typeSkillBasedApp = zoneOverlayBeforeTest?.termination?.typeSkillBasedApp,
-                    durationInSeconds = if (zoneOverlayBeforeTest?.termination?.typeSkillBasedApp == TypeSkillBasedApp.TIMER) zoneOverlayBeforeTest?.termination?.remainingTimeInSeconds else null
+                    durationInSeconds = if (zoneOverlayBeforeTest?.termination?.typeSkillBasedApp == ZoneOverlayTerminationTypeSkillBasedApp.TIMER) zoneOverlayBeforeTest?.termination?.remainingTimeInSeconds else null
                 )
             )
             // 422 Unprocessable Entity: "{"errors":[{"code":"temperature.missingCelsiusOrFahrenheit","title":"neither celsius nor fahrenheit temperatures provided"}]}"
@@ -73,7 +72,7 @@ class ZoneControlApi_IT(
 
     // result:
     // ZoneOverlay(type=MANUAL, setting=ZoneSetting(power=ON, type=HEATING, temperature=ZoneSettingTemperature(celsius=18.8, fahrenheit=65.84)),
-    // termination=ZoneOverlayTermination(type=MANUAL, durationInSeconds=null, remainingTimeInSeconds=null, typeSkillBasedApp=MANUAL, expiry=null, projectedExpiry=null))
+    // termination=ZoneOverlayTermination(type=MANUAL, durationInSeconds=null, remainingTimeInSeconds=null, ZoneOverlayTerminiationTypeSkillBasedApp=MANUAL, expiry=null, projectedExpiry=null))
     // Text in app: Until you resume schedule
     @Test
     fun putZoneOverlay_manual_on() {
@@ -81,13 +80,13 @@ class ZoneControlApi_IT(
         tadoZoneControlAPI.deleteZoneOverlay(HOME_ID, ZONE_ID)
 
         // set the overlay
-        val zoneOverlay = OverlayInput(
+        val zoneOverlay = ZoneOverlay(
             setting = ZoneSetting(
                 type = ZoneType.HEATING,
                 power = Power.ON,
                 temperature = Temperature(celsius = 18.8f)
             ),
-            termination = OverlayInputTermination(typeSkillBasedApp = TypeSkillBasedApp.MANUAL)
+            termination = ZoneOverlayTermination(typeSkillBasedApp = ZoneOverlayTerminationTypeSkillBasedApp.MANUAL)
         )
         val result = tadoZoneControlAPI.putZoneOverlay(HOME_ID, ZONE_ID, zoneOverlay)
 //        System.out.println("result of put overlay - manual ON")
@@ -96,27 +95,27 @@ class ZoneControlApi_IT(
 
     // Result:
     // Overlay(type=MANUAL, setting=ZoneSetting(power=OFF, type=HEATING, temperature=null),
-    // termination=OverlayTermination(type=MANUAL, durationInSeconds=null, remainingTimeInSeconds=null, typeSkillBasedApp=MANUAL, expiry=null, projectedExpiry=null))
+    // termination=OverlayTermination(type=MANUAL, durationInSeconds=null, remainingTimeInSeconds=null, ZoneOverlayTerminiationTypeSkillBasedApp=MANUAL, expiry=null, projectedExpiry=null))
     @Test
     fun putZoneOverlay_manual_off() {
         // first delete any existing overlay
         tadoZoneControlAPI.deleteZoneOverlay(HOME_ID, ZONE_ID)
 
         // set the overlay
-        val zoneOverlay = OverlayInput(
+        val zoneOverlay = ZoneOverlay(
             setting = ZoneSetting(
                 type = ZoneType.HEATING,
                 power = Power.OFF),
-            termination = OverlayInputTermination(typeSkillBasedApp = TypeSkillBasedApp.MANUAL)
+            termination = ZoneOverlayTermination(typeSkillBasedApp = ZoneOverlayTerminationTypeSkillBasedApp.MANUAL)
         )
         val result = tadoZoneControlAPI.putZoneOverlay(HOME_ID, ZONE_ID, zoneOverlay)
-        System.out.println("result of put overlay - manual OFF")
-        System.out.println(result)
+//        System.out.println("result of put overlay - manual OFF")
+//        System.out.println(result)
     }
 
     // Result:
     // ZoneOverlay(type=MANUAL, setting=ZoneSetting(power=ON, type=HEATING, temperature=ZoneSettingTemperature(celsius=18.8, fahrenheit=65.84)),
-    // termination=ZoneOverlayTermination(type=TADO_MODE, durationInSeconds=null, remainingTimeInSeconds=null, typeSkillBasedApp=TADO_MODE, expiry=null, projectedExpiry=null))
+    // termination=ZoneOverlayTermination(type=TADO_MODE, durationInSeconds=null, remainingTimeInSeconds=null, ZoneOverlayTerminiationTypeSkillBasedApp=TADO_MODE, expiry=null, projectedExpiry=null))
     // Text in app: Active indefinitely
 
     // Type tado_mode set when temperature set via thermostat.
@@ -134,7 +133,7 @@ class ZoneControlApi_IT(
     //                },
     //                "termination": {
     //                    "type": "TADO_MODE",
-    //                    "typeSkillBasedApp": "TADO_MODE",
+    //                    "ZoneOverlayTerminiationTypeSkillBasedApp": "TADO_MODE",
     //                    "projectedExpiry": "2024-08-16T20:25:00Z"
     //                }
     //            }
@@ -144,36 +143,36 @@ class ZoneControlApi_IT(
         tadoZoneControlAPI.deleteZoneOverlay(HOME_ID, ZONE_ID)
 
         // set the overlay
-        val zoneOverlay = OverlayInput(
+        val zoneOverlay = ZoneOverlay(
             setting = ZoneSetting(
                 type = ZoneType.HEATING,
                 power = Power.ON,
                 temperature = Temperature(celsius = 18.8f)
             ),
-            termination = OverlayInputTermination(typeSkillBasedApp = TypeSkillBasedApp.TADO_MODE)
+            termination = ZoneOverlayTermination(typeSkillBasedApp = ZoneOverlayTerminationTypeSkillBasedApp.TADO_MODE)
         )
         val result = tadoZoneControlAPI.putZoneOverlay(HOME_ID, ZONE_ID, zoneOverlay)
-        System.out.println("result of put overlay - tado_mode")
-        System.out.println(result)
+//        System.out.println("result of put overlay - tado_mode")
+//        System.out.println(result)
     }
 
 
     // result:
     // ZoneOverlay(type=MANUAL, setting=ZoneSetting(power=ON, type=HEATING, temperature=ZoneSettingTemperature(celsius=18.8, fahrenheit=65.84)),
-    // termination=ZoneOverlayTermination(type=TIMER, durationInSeconds=1800, remainingTimeInSeconds=2033, typeSkillBasedApp=NEXT_TIME_BLOCK, expiry=2024-08-14T20:00:00Z, projectedExpiry=2024-08-14T20:00:00Z))
+    // termination=ZoneOverlayTermination(type=TIMER, durationInSeconds=1800, remainingTimeInSeconds=2033, ZoneOverlayTerminiationTypeSkillBasedApp=NEXT_TIME_BLOCK, expiry=2024-08-14T20:00:00Z, projectedExpiry=2024-08-14T20:00:00Z))
     @Test
     fun putZoneOverlay_nextTimeBlock() {
         // first delete any existing overlay
         tadoZoneControlAPI.deleteZoneOverlay(HOME_ID, ZONE_ID)
 
         // set the overlay
-        val zoneOverlay = OverlayInput(
+        val zoneOverlay = ZoneOverlay(
             setting = ZoneSetting(
                 type = ZoneType.HEATING,
                 power = Power.ON,
                 temperature = Temperature(celsius = 18.8f)
             ),
-            termination = OverlayInputTermination(typeSkillBasedApp = TypeSkillBasedApp.NEXT_TIME_BLOCK)
+            termination = ZoneOverlayTermination(typeSkillBasedApp = ZoneOverlayTerminationTypeSkillBasedApp.NEXT_TIME_BLOCK)
         )
         val result = tadoZoneControlAPI.putZoneOverlay(HOME_ID, ZONE_ID, zoneOverlay)
 //        System.out.println("result of put overlay - next time block")
@@ -182,21 +181,21 @@ class ZoneControlApi_IT(
 
     // Result:
     // ZoneOverlay(type=MANUAL, setting=ZoneSetting(power=ON, type=HEATING, temperature=ZoneSettingTemperature(celsius=18.8, fahrenheit=65.84)),
-    // termination=ZoneOverlayTermination(type=TIMER, durationInSeconds=1400, remainingTimeInSeconds=1399, typeSkillBasedApp=TIMER, expiry=2024-08-14T19:49:24Z, projectedExpiry=2024-08-14T19:49:24Z))
+    // termination=ZoneOverlayTermination(type=TIMER, durationInSeconds=1400, remainingTimeInSeconds=1399, ZoneOverlayTerminiationTypeSkillBasedApp=TIMER, expiry=2024-08-14T19:49:24Z, projectedExpiry=2024-08-14T19:49:24Z))
     @Test
     fun putZoneOverlay_timer() {
         // first delete any existing overlay
         tadoZoneControlAPI.deleteZoneOverlay(HOME_ID, ZONE_ID)
 
         // set the overlay
-        val zoneOverlay = OverlayInput(
+        val zoneOverlay = ZoneOverlay(
             setting = ZoneSetting(
                 type = ZoneType.HEATING,
                 power = Power.ON,
                 temperature = Temperature(celsius = 18.8f)
             ),
-            termination = OverlayInputTermination(
-                typeSkillBasedApp = TypeSkillBasedApp.TIMER,
+            termination = ZoneOverlayTermination(
+                typeSkillBasedApp = ZoneOverlayTerminationTypeSkillBasedApp.TIMER,
                 durationInSeconds = 1000)
         )
         val result = tadoZoneControlAPI.putZoneOverlay(HOME_ID, ZONE_ID, zoneOverlay)
@@ -207,17 +206,17 @@ class ZoneControlApi_IT(
     @Test
     fun getZoneAwayConfiguration() {
         val endpoint = "GET /homes/{homeId}/zones/{zoneId}/schedules/awayConfiguration"
-        val awayConfiguration = assertHttpErrorIsNotThrown(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
+        val awayConfiguration = assertNoHttpErrorStatus(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
             tadoZoneControlAPI.getZoneAwayConfiguration(HOME_ID, ZONE_ID)
         }
         assertNotNull(awayConfiguration)
-        verifyZoneAwayConfiguration(awayConfiguration, endpoint)
+        verifyZoneAwayConfiguration(ZoneType.HEATING, awayConfiguration, endpoint)
     }
 
     @Test
     fun getZoneActiveTimetable() {
         val endpoint = "GET /homes/{homeId}/zones/{zoneId}/schedules/activeTimetable"
-        val timetable = assertHttpErrorIsNotThrown(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
+        val timetable = assertNoHttpErrorStatus(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
             tadoZoneControlAPI.getZoneActiveTimetable(HOME_ID, ZONE_ID)
         }
         assertNotNull(timetable)
@@ -227,7 +226,7 @@ class ZoneControlApi_IT(
     @Test
     fun getZoneTimetables() {
         val endpoint = "GET /homes/{homeId}/zones/{zoneId}/schedules/timetables"
-        val timetables = assertHttpErrorIsNotThrown(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
+        val timetables = assertNoHttpErrorStatus(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
             tadoZoneControlAPI.getZoneTimetables(HOME_ID, ZONE_ID)
         }
         assertNotNull(timetables)
@@ -238,7 +237,7 @@ class ZoneControlApi_IT(
     @Test
     fun getZoneTimetable() {
         val endpoint = "GET /homes/{homeId}/zones/{zoneId}/schedules/timetables/{timetableTypeId}"
-        val timetable = assertHttpErrorIsNotThrown(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
+        val timetable = assertNoHttpErrorStatus(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
             tadoZoneControlAPI.getZoneTimetable(HOME_ID, ZONE_ID, 1)
         }
         assertNotNull(timetable)
@@ -248,22 +247,24 @@ class ZoneControlApi_IT(
     @Test
     fun getZoneTimetableBlocks() {
         val endpoint = "GET /homes/{homeId}/zones/{zoneId}/schedules/timetables/{timetableTypeId}/blocks"
-        val timetableBlocks = assertHttpErrorIsNotThrown(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
+        val timetableBlocks = assertNoHttpErrorStatus(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
             tadoZoneControlAPI.getZoneTimetableBlocks(HOME_ID, ZONE_ID, TimetableTypeId._1)
         }
         assertNotNull(timetableBlocks)
         assertNotEquals(0, timetableBlocks.size)
-        verifyTimetableBlock(timetableBlocks[0], endpoint)
+        verifyTimetableBlock(ZoneType.HEATING, timetableBlocks[0], endpoint)
     }
 
     @Test
     fun getZoneTimetableBlocksByDayType() {
         val endpoint = "GET /homes/{homeId}/zones/{zoneId}/schedules/timetables/{timetableTypeId}/blocks/{dayType}"
-        val timetableBlocks = assertHttpErrorIsNotThrown(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
+        val timetableBlocks = assertNoHttpErrorStatus(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
             tadoZoneControlAPI.getZoneTimetableBlocksByDayType(HOME_ID, ZONE_ID, TimetableTypeId._1, DayType.SATURDAY)
         }
         assertNotNull(timetableBlocks)
         assertNotEquals(0, timetableBlocks.size)
-        verifyTimetableBlock(timetableBlocks[0], endpoint)
+        verifyTimetableBlock(ZoneType.HEATING, timetableBlocks[0], endpoint)
     }
+
+
 }

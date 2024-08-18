@@ -26,7 +26,7 @@ class MobileDeviceApi_IT(
     @Test
     fun testGetMobileDevices() {
         val endpoint = "GET /homes/{homeId}/mobileDevices"
-        val mobileDevices = assertHttpErrorIsNotThrown(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
+        val mobileDevices = assertNoHttpErrorStatus(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
             tadoMobileDeviceAPI.getMobileDevices(HOME_ID)
         }
         assertNotNull(mobileDevices)
@@ -37,7 +37,7 @@ class MobileDeviceApi_IT(
     @Test
     fun testGetMobileDevice() {
         val endpoint = "GET /homes/{homeId}/mobileDevices/{mobileDeviceId}"
-        val mobileDevice = assertHttpErrorIsNotThrown(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
+        val mobileDevice = assertNoHttpErrorStatus(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
             tadoMobileDeviceAPI.getMobileDevice(HOME_ID, MOBILE_DEVICE_ID)
         }
         assertNotNull(mobileDevice)

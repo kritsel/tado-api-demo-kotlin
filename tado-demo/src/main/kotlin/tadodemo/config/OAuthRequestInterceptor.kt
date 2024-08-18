@@ -8,7 +8,6 @@ import org.springframework.http.client.ClientHttpRequestInterceptor
 import org.springframework.http.client.ClientHttpResponse
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
 import org.springframework.stereotype.Component
 import java.io.IOException
 import java.util.*
@@ -16,12 +15,6 @@ import java.util.*
 
 @Component
 open class OAuthRequestInterceptor(
-    @Value("\${tado.username:undefined}")
-    private val tadoUsername:String,
-
-    @Value("\${tado.password:undefined}")
-    private val tadoPassword:String,
-
     @Value("\${useWindowsTrustStore:false}")
     private val useWindowsTrustStore:Boolean,
 

@@ -11,3 +11,7 @@ spring:
         provider:
           tado:
             token-uri: https://auth.tado.com/oauth/token
+
+#  jackson:
+#    deserialization:
+#      FAIL_ON_UNKNOWN_PROPERTIES: true

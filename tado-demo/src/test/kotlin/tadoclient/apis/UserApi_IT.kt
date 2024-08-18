@@ -9,7 +9,6 @@ import tadoclient.apis.verify.verifyUser
 import tadodemo.Application
 import kotlin.test.Test
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNotNull
 
 @SpringBootTest(classes = arrayOf( Application::class))
 @ActiveProfiles("test")
@@ -22,24 +21,23 @@ class UserApi_IT (
     @Test
     fun getMe() {
         val endpoint = "GET /me"
-        val user = assertHttpErrorIsNotThrown(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
+        val user = assertNoHttpErrorStatus(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
             tadoUserAPI.getMe()
         }
-        assertNotNull(user)
         verifyUser(user, endpoint)
     }
 
     @Test
     fun getUsers() {
         val endpoint = "GET /homes/{homeId}/users"
-        val users = assertHttpErrorIsNotThrown(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
-            tadoUserAPI.getUsers(HOME_ID)
+        val users = assertUnknownPropertyErrorNotThrown {
+            assertNoHttpErrorStatus(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
+                tadoUserAPI.getUsers(HOME_ID)
+            }
         }
 
         // check users
-        assertNotNull(users)
         assertNotEquals(0, users.size)
-        assertNotNull(users[0])
-        verifyUser(users[0], endpoint, "response[0]")
+        users.forEachIndexed{i, elem -> verifyUser(elem, endpoint, "response[$i]")}
     }
 }

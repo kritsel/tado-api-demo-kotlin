@@ -21,7 +21,7 @@ class HomeControlApi_IT(
     @Test
     fun getHomeState() {
         val endpoint = "GET /homes/{homeId}"
-        val homeState = assertHttpErrorIsNotThrown(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
+        val homeState = assertNoHttpErrorStatus(failMessage403(endpoint), HttpStatus.FORBIDDEN) {
             tadoHomeControlAPI.getHomeState(HOME_ID)
         }
         assertNotNull(homeState)
